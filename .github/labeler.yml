@@ -1,0 +1,3 @@
+chore:
+  - all:
+      - head-branch: ["topic/chore-"]
