@@ -1,7 +1,7 @@
 test-ts:
   - all:
       - changed-files:
-          - AnyGlobToAnyFile: ["test/**/*.spec.ts"]
+          - AnyGlobToAnyFile: ["test/**/*.spec.{js,ts}"]
 chore:
   - all:
       - head-branch: ["^.+/chore-"]
