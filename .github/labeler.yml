@@ -1,6 +1,6 @@
 test-ts:
   - all:
-      - AnyGlobToAnyFile: ["test/**/*spec.ts"]
+      - AnyGlobToAnyFile: ["test/*.spec.ts"]
 chore:
   - all:
       - head-branch: ["^.+/chore-"]
