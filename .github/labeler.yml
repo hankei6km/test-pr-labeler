@@ -6,4 +6,4 @@ cd:
       - AllGlobsToAnyFile: [".github/workflows/.*{yml,yaml}"]
 test-ts:
   - all:
-      - AllGlobsToAnyFile: ["test/**/*specs.{ts,js}"]
+      - AllGlobsToAnyFile: ["test/**/*spec.{ts,js}"]
