@@ -1,9 +1,9 @@
+test-ts:
+  - all:
+      - AnyGlobToAnyFile: ["test/**/*spec.ts"]
 chore:
   - all:
       - head-branch: ["^.+/chore-"]
 cd:
   - all:
       - AllGlobsToAnyFile: [".github/workflows/.*{yml,yaml}"]
-test-ts:
-  - all:
-      - AllGlobsToAnyFile: ["test/**/*spec.{ts,js}"]
