@@ -1,2 +1,2 @@
 console.log("test という体");
-console.log("確認");
+console.log("パターンの確認");
