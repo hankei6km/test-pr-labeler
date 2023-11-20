@@ -17,6 +17,7 @@ jobs:
     steps:
     - name: Print title
       run: |
-        echo "${TITLE}"
+        TYPE="$(grep -o -e '^[^:]\+' "${TITLE}")"
+        echo "$(grep -o -e '^[^!]\+' <<< "${TYPE}")"
       env:
         TITLE: ${{ github.event.pull_request.title }}
