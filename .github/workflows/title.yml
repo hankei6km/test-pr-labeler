@@ -15,11 +15,18 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - name: Print title
+    - name: Print label(check type)
       run: |
         TYPE="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
-        echo "${TYPE%"!"}"
+        LABEL="${TYPE%"!"}"
+        echo "${LABEL}"
         if [[ ${TYPE} == *! ]]; then echo "breaking change"; fi
-
+        TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
+        for i in ${TYPES[@]}; do
+            if [[ "${i}" = "${LABEL}" ]]; then
+                exit 0
+            fi
+        done
+        exit 1
       env:
         TITLE: ${{ github.event.pull_request.title }}
