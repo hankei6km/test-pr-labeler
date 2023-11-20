@@ -18,8 +18,8 @@ jobs:
     - name: Print title
       run: |
         TYPE="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
-        echo "$(grep -o -e '^[^!]\+' <<< "${TYPE}")"
+        echo "${TYPE%"!"}"
         if [[ ${TYPE} == *! ]]; then echo "breaking change"; fi
-        
+
       env:
         TITLE: ${{ github.event.pull_request.title }}
