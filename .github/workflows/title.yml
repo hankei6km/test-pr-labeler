@@ -21,6 +21,7 @@ jobs:
         LABEL="${TYPE%"!"}"
         echo "${LABEL}"
         if [[ ${TYPE} == *! ]]; then echo "breaking change"; fi
+
         TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
         for i in ${TYPES[@]}; do
             if [[ "${i}" = "${LABEL}" ]]; then
