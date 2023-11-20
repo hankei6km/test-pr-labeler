@@ -1,0 +1,22 @@
+name: "pull request title"
+# trigger はとりあえず
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - '!v*'
+
+jobs:
+  title:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print title
+      run: |
+        echo "${TITLE}"
+      env:
+        TITLE: ${{ github.event.pull_request.title }}
