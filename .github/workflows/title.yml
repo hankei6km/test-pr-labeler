@@ -18,6 +18,8 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
+
     - id: info
       uses: ./.github/actions/sem-title
       with:
