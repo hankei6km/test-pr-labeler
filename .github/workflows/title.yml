@@ -46,3 +46,5 @@ jobs:
         TITLE: ${{ github.event.pull_request.title }}
         REPO: ${{ github.repository }}
         BRANCH: ${{ github.ref }}
+      shell: bash
+  
