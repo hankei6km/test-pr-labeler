@@ -40,8 +40,9 @@ runs:
         }
 
         TITLE_HEAD="$(head -n 1 <<< "${TITLE}")"
-        PREFIX="$(grep -o -e '^[^:]\+' <<< "${TITLE_HEAD}")" || PREFIX=""
-        if [[ "${PREFIX}" == "" ]]; then echo "::error ::Missing prefix(type)"; fi
+        TMP=PREFIX="$(grep -o -e '^[^:]\+:' <<< "${TITLE_HEAD}")" || TMP_PREFIX=""
+        if [[ "${TMP_PREFIX}" == "" ]]; then echo "::error ::missing prefix(type)"; fi
+        PREFIX=${TMP_PREFIX#:}
 
         TYPE="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
         echo "label(type): ${TYPE}"
@@ -51,7 +52,7 @@ runs:
 
         if [[ ${PREFIX} == *! ]]; then IS_BREAKING_CHANGE="true"; else IS_BREAKING_CHANGE="false"; fi
 
-        validate_type "${TYPE}" || echo "::error invalid type: ${TYPE}"
+        validate_type "${TYPE}" || echo "::error ::invalid type: ${TYPE}"
 
         echo "type=${TYPE}" >> "${GITHUB_OUTPUT}"
         echo "scope=${SCOPE}" >> "${GITHUB_OUTPUT}"
