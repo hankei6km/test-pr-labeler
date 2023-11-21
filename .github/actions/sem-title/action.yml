@@ -45,7 +45,6 @@ runs:
         PREFIX=${TMP_PREFIX%: }
 
         TYPE="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
-        echo "label(type): ${TYPE}"
 
         TMP_SCOPE="$(grep  -o -e '([^)]\+' <<< "${PREFIX}" || echo '')"
         SCOPE="${TMP_SCOPE#(}"
