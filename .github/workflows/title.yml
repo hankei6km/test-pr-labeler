@@ -41,6 +41,8 @@ jobs:
         exit 1
 
         gh pr edit --add-label "${LABEL}" -R "${REPO}" -B "${BRANCH}"
+
+        gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" -B "${BRANCH}"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TITLE: ${{ github.event.pull_request.title }}
