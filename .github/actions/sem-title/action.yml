@@ -47,5 +47,6 @@ runs:
 
         echo "type=${TYPE}" >> "${GITHUB_OUTPUT}"
 
-      env: TITLE=${{ inputs.title }}
+      env:
+        TITLE: ${{ inputs.title }}
       shell: bash
