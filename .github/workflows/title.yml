@@ -31,9 +31,13 @@ jobs:
         gh pr edit --add-label "${TYPE}" -R "${REPO}" "${PR_NUM}"
 
         gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}"
+        echo "scope: ${SCOPE}"
+        echo "is_breaking_change: ${IS_BREAKING_CHANGE}"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TYPE: ${{ steps.info.outputs.type }}
+        SCOPE: ${{ steps.info.outputs.scope }}
+        IS_BREAKING_CHANGE: ${{ steps.info.outputs.is_breaking_change }}
         REPO: ${{ github.repository }}
         PR_NUM: ${{ github.event.pull_request.number }}
       shell: bash

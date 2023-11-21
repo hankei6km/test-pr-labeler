@@ -9,6 +9,12 @@ outputs:
   type:
     description: "Type"
     value: ${{ steps.parse.outputs.type }}
+  scope:
+    description: "Scope"
+    value: ${{ steps.parse.outputs.scope }}
+  is_breaking_change:
+    description: "Is BREAKING CHANGE"
+    value: ${{ steps.parse.outputs.is_breaking_change }}
 
 runs:
   using: "composite"
@@ -18,7 +24,7 @@ runs:
       run: |
         TYPE=""
         SCORE=""
-        BREAKING_CHANGE="false"
+        IS_BREAKING_CHANGE="false"
 
         function validate_type {
           local TYPES
@@ -41,11 +47,13 @@ runs:
         TMP_SCOPE="$(grep  -o -e '([^)]\+' <<< "${PREFIX}" || echo '')"
         SCOPE="${TMP_SCOPE#(}"
 
-        if [[ ${PREFIX} == *! ]]; then BREAKIN_CHANGE="true"; else BREAKIN_CHANGE="false"; fi
+        if [[ ${PREFIX} == *! ]]; then IS_BREAKING_CHANGE="true"; else IS_BREAKING_CHANGE="false"; fi
 
         validate_type "${TYPE}"
 
         echo "type=${TYPE}" >> "${GITHUB_OUTPUT}"
+        echo "scope=${SCOPE}" >> "${GITHUB_OUTPUT}"
+        echo "is_breaking_change=${IS_BREAKING_CHANGE}" >> "${GITHUB_OUTPUT}"
 
       env:
         TITLE: ${{ inputs.title }}
