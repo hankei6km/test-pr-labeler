@@ -1,0 +1,50 @@
+name: "pull request title"
+# trigger はとりあえず
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+  push:
+    branches:
+      - 'main'
+    tags:
+      - '!v*'
+
+jobs:
+  title:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print label(check type)
+      run: |
+        PREFIX="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
+
+        LABEL="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
+        echo "label(type): ${LABEL}"
+
+        SCOPE="$(grep  -o -e '([^)]\+' <<< "${PREFIX}")"
+        SCOPE="${SCOPE#(}"
+        echo "scope: ${SCOPE}"
+
+        echo -n "breaking change: "
+        if [[ ${PREFIX} == *! ]]; then echo "true"; else echo "false"; fi
+
+        TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
+        for i in ${TYPES[@]}; do
+            if [[ "${i}" = "${LABEL}" ]]; then
+                exit 0
+            fi
+        done
+        exit 1
+
+        gh pr edit --add-label "${LABEL}" -R "${REPO}" -B "${BRANCH}"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TITLE: ${{ github.event.pull_request.title }}
+        REPO: ${{ github.repository }}
+        BRANCH: ${{ github.ref }}
+      shell: bash
+  
