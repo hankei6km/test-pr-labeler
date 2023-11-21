@@ -35,7 +35,7 @@ jobs:
         TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
         for i in ${TYPES[@]}; do
             if [[ "${i}" = "${LABEL}" ]]; then
-                exit 0
+                break
             fi
         done
         exit 1
