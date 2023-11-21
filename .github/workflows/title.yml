@@ -40,7 +40,7 @@ jobs:
         done
         exit 1
 
-        gh pr edit --add-label "${LABEL}" -R "${REPO}" "${PR_NUM}"
+        echo pr edit --add-label "${LABEL}" -R "${REPO}" "${PR_NUM}"
 
         gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}"
       env:
