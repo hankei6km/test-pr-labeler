@@ -2,6 +2,9 @@ name: "pull request title"
 # trigger はとりあえず
 on:
   pull_request:
+    types:
+      - opened
+      - edited
   push:
     branches:
       - 'main'
