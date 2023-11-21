@@ -17,10 +17,10 @@ jobs:
     steps:
     - name: Print label(check type)
       run: |
-        TYPE="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
-        LABEL="${TYPE%"!"}"
+        PREFIX="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
+        LABEL="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
         echo "${LABEL}"
-        if [[ ${TYPE} == *! ]]; then echo "breaking change"; fi
+        if [[ ${PREFIX} == *! ]]; then echo "breaking change"; fi
 
         TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
         for i in ${TYPES[@]}; do
