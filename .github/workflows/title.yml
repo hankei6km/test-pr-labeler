@@ -20,6 +20,16 @@ jobs:
     steps:
     - name: Print label(check type)
       run: |
+        TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
+        function validate_type {
+          for i in ${TYPES[@]}; do
+              if [[ "${i}" = "${LABEL}" ]]; then
+                  return 0
+              fi
+          done
+          return 1
+        }
+
         PREFIX="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
 
         LABEL="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
@@ -32,13 +42,7 @@ jobs:
         echo -n "breaking change: "
         if [[ ${PREFIX} == *! ]]; then echo "true"; else echo "false"; fi
 
-        TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
-        for i in ${TYPES[@]}; do
-            if [[ "${i}" = "${LABEL}" ]]; then
-                break
-            fi
-        done
-        exit 1
+        validate_type
 
         gh pr edit --add-label "${LABEL}" -R "${REPO}" "${PR_NUM}"
 
