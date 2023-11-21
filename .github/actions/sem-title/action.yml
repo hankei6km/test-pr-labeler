@@ -51,7 +51,7 @@ runs:
 
         if [[ ${PREFIX} == *! ]]; then IS_BREAKING_CHANGE="true"; else IS_BREAKING_CHANGE="false"; fi
 
-        validate_type "${TYPE}" || echo "::error ::invalid type: ${TYPE}"
+        validate_type "${TYPE}" || echo "::error invalid type: ${TYPE}"
 
         echo "type=${TYPE}" >> "${GITHUB_OUTPUT}"
         echo "scope=${SCOPE}" >> "${GITHUB_OUTPUT}"
