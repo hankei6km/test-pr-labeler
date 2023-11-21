@@ -18,38 +18,19 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
+    - id: info
+      uses: ./.github/actions/sem-title
+      with:
+        TITLE: ${{ github.event.pull_request.title }}
+
     - name: Print label(check type)
       run: |
-        TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
-        function validate_type {
-          for i in ${TYPES[@]}; do
-              if [[ "${i}" = "${LABEL}" ]]; then
-                  return 0
-              fi
-          done
-          return 1
-        }
-
-        PREFIX="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
-
-        LABEL="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
-        echo "label(type): ${LABEL}"
-
-        SCOPE="$(grep  -o -e '([^)]\+' <<< "${PREFIX}" || echo '')"
-        SCOPE="${SCOPE#(}"
-        echo "scope: ${SCOPE}"
-
-        echo -n "breaking change: "
-        if [[ ${PREFIX} == *! ]]; then echo "true"; else echo "false"; fi
-
-        validate_type
-
         gh pr edit --add-label "${LABEL}" -R "${REPO}" "${PR_NUM}"
 
         gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TITLE: ${{ github.event.pull_request.title }}
+        TYPE: ${{ steps.info.outputs.type }}
         REPO: ${{ github.repository }}
         PR_NUM: ${{ github.event.pull_request.number }}
       shell: bash
