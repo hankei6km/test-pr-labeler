@@ -25,7 +25,7 @@ jobs:
         LABEL="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
         echo "label(type): ${LABEL}"
 
-        SCOPE="$(grep  -o -e '([^)]\+' <<< "${PREFIX}")"
+        SCOPE="$(grep  -o -e '([^)]\+' <<< "${PREFIX}" || echo '')"
         SCOPE="${SCOPE#(}"
         echo "scope: ${SCOPE}"
 
