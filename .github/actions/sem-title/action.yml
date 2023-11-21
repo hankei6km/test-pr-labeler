@@ -28,7 +28,7 @@ runs:
         ERR_MGS=""
 
         function validate_type {
-          if [[ -z "${1}" ]]; then
+          if [[ -n "${1}" ]]; then
             return 0
           fi
           return 1
