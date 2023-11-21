@@ -22,7 +22,9 @@ jobs:
       run: |
         PREFIX="$(grep -o -e '^[^:]\+' <<< "${TITLE}")"
         LABEL="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}")"
-        echo "${LABEL}"
+        echo "label(type): ${LABEL}"
+        SCOPE="$(sed -e 's/[^(]\+(\([^)]\+\).\+/\1/' <<< "${LABEL}")"
+        echo "scope: ${SCOPE}"
         if [[ ${PREFIX} == *! ]]; then echo "breaking change"; fi
 
         TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
