@@ -28,14 +28,9 @@ runs:
         ERR_MGS=""
 
         function validate_type {
-          local TYPES
-          local I
-          TYPES=("fix" "feat" "build" "chore" "ci" "docs" "style" "refactor" "perf" "test")
-          for I in ${TYPES[@]}; do
-              if [[ "${I}" = "${1}" ]]; then
-                  return 0
-              fi
-          done
+          if [[ -z "${1}" ]]; then
+            return 0
+          fi
           return 1
         }
 
