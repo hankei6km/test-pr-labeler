@@ -1,0 +1,57 @@
+name: "sem-title"
+description: "get semantic info from title"
+inputs:
+  title:
+    description: "Title text"
+    required: true
+    default: ""
+outputs:
+  type:
+    description: "Type"
+    value: ${{ steps.parse.outputs.type }}
+  scope:
+    description: "Scope"
+    value: ${{ steps.parse.outputs.scope }}
+  is_breaking_change:
+    description: "Is BREAKING CHANGE"
+    value: ${{ steps.parse.outputs.is_breaking_change }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: parse
+      name: Parse title
+      run: |
+        TYPE=""
+        SCORE=""
+        IS_BREAKING_CHANGE="false"
+        ERR_MGS=""
+
+        function validate_type {
+          if [[ -n "${1}" ]]; then
+            return 0
+          fi
+          return 1
+        }
+
+        TITLE_HEAD="$(head -n 1 <<< "${TITLE}")"
+        TMP_PREFIX="$(grep -o -e '^[^:]\+: ' <<< "${TITLE_HEAD}" || echo '')"
+        if [[ "${TMP_PREFIX}" == "" ]]; then echo "::error ::missing prefix(type)"; fi
+        PREFIX=${TMP_PREFIX%: }
+
+        TYPE="$(grep -o -e '^[^(!]\+' <<< "${PREFIX}" || echo '')"
+
+        TMP_SCOPE="$(grep  -o -e '([^)]\+' <<< "${PREFIX}" || echo '')"
+        SCOPE="${TMP_SCOPE#(}"
+
+        if [[ ${PREFIX} == *! ]]; then IS_BREAKING_CHANGE="true"; else IS_BREAKING_CHANGE="false"; fi
+
+        validate_type "${TYPE}" || echo "::error ::invalid type: ${TYPE}"
+
+        echo "type=${TYPE}" >> "${GITHUB_OUTPUT}"
+        echo "scope=${SCOPE}" >> "${GITHUB_OUTPUT}"
+        echo "is_breaking_change=${IS_BREAKING_CHANGE}" >> "${GITHUB_OUTPUT}"
+
+      env:
+        TITLE: ${{ inputs.title }}
+      shell: bash
