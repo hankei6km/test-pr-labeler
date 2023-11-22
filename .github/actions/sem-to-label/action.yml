@@ -1,0 +1,49 @@
+name: "sem-to-label"
+description: "edit label by the type of semantic pr"
+inputs:
+  github-token:
+    description: "GITHUB_TOKEN"
+    required: true
+    default: ""
+  repo:
+    description: "repository"
+    required: true
+    default: ""
+  pr-num:
+    description: "pr number"
+    required: true
+    default: ""
+  label-prefix:
+    description: "the value to prepend the label"
+    required: false
+    default: "sem-pr: "
+  type:
+    description: "type of sematic pr"
+    required: true
+    default: ""
+  is_breaking_change:
+    description: "is pr breaking change('true' or 'false')"
+    required: true
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: edit labels
+      run: |
+        if [[ "${LABEL_PREFIX}" == "" ]]; then echo "::error ::label-prefix is not defined"; exit 1; fi
+
+        gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}" | while read -r label ; do
+          # jq でフィルターできそうだがエスケープが難しそうなので if を使う
+          if [[ "${label}" == "${LABEL_PREFIX}"* ]]; then
+            echo "${label}"
+          fi
+        done
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REPO: ${{ inputs.repo }}
+        PR_NUM: ${{ inputs.pr-num }}
+        LABEL_PREFIX: ${{ inputs.label-prefix }}
+        TYPE: ${{ inputs.type }}
+        IS_BREAKING_CHANGE: ${{ inputs.is_breaking_change }}
+      shell: bash
