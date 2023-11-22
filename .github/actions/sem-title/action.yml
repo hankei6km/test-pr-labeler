@@ -35,7 +35,7 @@ runs:
         }
 
         TITLE_HEAD="$(head -n 1 <<< "${TITLE}")"
-        TMP_PREFIX="$(grep -o -e '^[^:]\+: ' <<< "${TITLE_HEAD}") || echo ''"
+        TMP_PREFIX="$(grep -o -e '^[^:]\+: ' <<< "${TITLE_HEAD}" || echo '')"
         if [[ "${TMP_PREFIX}" == "" ]]; then echo "::error ::missing prefix(type)"; fi
         PREFIX=${TMP_PREFIX%: }
 
