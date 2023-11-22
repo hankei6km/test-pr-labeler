@@ -31,7 +31,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         repo: ${{ github.repository }}
-        pr_num: ${{ github.event.pull_request.number }}
+        pr-num: ${{ github.event.pull_request.number }}
         type: ${{ steps.info.outputs.type }}
-        is_breaking_change: ${{ steps.info.outputs.is_breaking_change }}
+        is-breaking-change: ${{ steps.info.outputs.is_breaking_change }}
   
