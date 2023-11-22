@@ -39,7 +39,7 @@ runs:
         ADD_BREAKING_CHANGE_LABEL="true"
         if [[ "${IS_BREAKING_CHANGE}" != "true" ]]; then ADD_BREAKING_CHANGE_LABEL="false"; fi
 
-        gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}" | while read -r label ; do
+        while read -r label ; do
           # jq でフィルターできそうだがエスケープが難しそうなので if を使う
           if [[ "${label}" == "${LABEL_PREFIX}"* ]]; then
             if [[ "${label}" == "${TARGET_LABEL}" ]]; then
@@ -59,7 +59,7 @@ runs:
               gh pr edit --remove-label "${label}" -R "${REPO}" "${PR_NUM}"
             fi
           fi
-        done
+        done < <(gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}")
 
         if [[ ${ADD_TARGET_LABEL} == "true" ]]; then
           # 対象の label は付加されていなかったので追加する

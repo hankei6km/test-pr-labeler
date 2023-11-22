@@ -23,9 +23,8 @@ runs:
       name: Parse title
       run: |
         TYPE=""
-        SCORE=""
+        SCOPE=""
         IS_BREAKING_CHANGE="false"
-        ERR_MGS=""
 
         function validate_type {
           if [[ -n "${1}" ]]; then
@@ -48,9 +47,11 @@ runs:
 
         validate_type "${TYPE}" || echo "::error ::invalid type: ${TYPE}"
 
-        echo "type=${TYPE}" >> "${GITHUB_OUTPUT}"
-        echo "scope=${SCOPE}" >> "${GITHUB_OUTPUT}"
-        echo "is_breaking_change=${IS_BREAKING_CHANGE}" >> "${GITHUB_OUTPUT}"
+        {
+          echo "type=${TYPE}"
+          echo "scope=${SCOPE}"
+          echo "is_breaking_change=${IS_BREAKING_CHANGE}" 
+        } >> "${GITHUB_OUTPUT}"
 
       env:
         TITLE: ${{ inputs.title }}
