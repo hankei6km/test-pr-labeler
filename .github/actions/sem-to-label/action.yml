@@ -1,0 +1,81 @@
+name: "sem-to-label"
+description: "edit label by the type of semantic pr"
+inputs:
+  github-token:
+    description: "GITHUB_TOKEN"
+    required: true
+    default: ""
+  repo:
+    description: "repository"
+    required: true
+    default: ""
+  pr-num:
+    description: "pr number"
+    required: true
+    default: ""
+  label-prefix:
+    description: "the value to prepend the label"
+    required: false
+    default: "sem-pr: "
+  type:
+    description: "type of sematic pr"
+    required: true
+    default: ""
+  is-breaking-change:
+    description: "is pr breaking change('true' or 'false')"
+    required: true
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: edit labels
+      run: |
+        if [[ "${LABEL_PREFIX}" == "" ]]; then echo "::error ::label-prefix is not defined"; exit 1; fi
+        TARGET_LABEL="${LABEL_PREFIX}${TYPE}"
+        BREAKING_CHANGE_LABEL="${LABEL_PREFIX}breaking change"
+
+        ADD_TARGET_LABEL="true"
+        ADD_BREAKING_CHANGE_LABEL="true"
+        if [[ "${IS_BREAKING_CHANGE}" != "true" ]]; then ADD_BREAKING_CHANGE_LABEL="false"; fi
+
+        gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}" | while read -r label ; do
+          # jq でフィルターできそうだがエスケープが難しそうなので if を使う
+          if [[ "${label}" == "${LABEL_PREFIX}"* ]]; then
+            if [[ "${label}" == "${TARGET_LABEL}" ]]; then
+              # label は登録されている
+              ADD_TARGET_LABEL="false"
+            elif [[ "${label}" == "${BREAKING_CHANGE_LABEL}" ]]; then
+              # breaking change の処理
+              if [[ "${IS_BREAKING_CHANGE}" == "true" ]]; then
+                # breaking change を保持(すでに label は付加されている)
+                ADD_BREAKING_CHANGE_LABEL="false"
+              else
+                # breaking change ではない(label を削除)
+                gh pr edit --remove-label "${BREAKING_CHANGE_LABEL}" -R "${REPO}" "${PR_NUM}"
+              fi
+            else
+              # sem pr の type に対応する label は同時に 1 つのみ(対象の label 以外は削除)
+              gh pr edit --remove-label "${label}" -R "${REPO}" "${PR_NUM}"
+            fi
+          fi
+        done
+
+        if [[ ${ADD_TARGET_LABEL} == "true" ]]; then
+          # 対象の label は付加されていなかったので追加する
+          gh pr edit --add-label "${TARGET_LABEL}" -R "${REPO}" "${PR_NUM}"
+        fi
+
+        if [[ ${ADD_BREAKING_CHANGE_LABEL} == "true" ]]; then
+          # breaking change の label は付加されていなかったので追加する
+          gh pr edit --add-label "${BREAKING_CHANGE_LABEL}" -R "${REPO}" "${PR_NUM}"
+        fi
+
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REPO: ${{ inputs.repo }}
+        PR_NUM: ${{ inputs.pr-num }}
+        LABEL_PREFIX: ${{ inputs.label-prefix }}
+        TYPE: ${{ inputs.type }}
+        IS_BREAKING_CHANGE: ${{ inputs.is-breaking-change }}
+      shell: bash
