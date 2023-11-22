@@ -37,6 +37,8 @@ runs:
 
         ADD_TARGET_LABEL="true"
         ADD_BREAKING_CHANGE_LABEL="true"
+        if [[ "${IS_BREAKING_CHANGE}" != "true" ]]; then ADD_BREAKING_CHANGE_LABEL="false"; fi
+
         gh pr view  --json labels --jq '.labels[].name' -R "${REPO}" "${PR_NUM}" | while read -r label ; do
           # jq でフィルターできそうだがエスケープが難しそうなので if を使う
           if [[ "${label}" == "${LABEL_PREFIX}"* ]]; then
