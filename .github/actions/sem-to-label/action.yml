@@ -21,7 +21,7 @@ inputs:
     description: "type of sematic pr"
     required: true
     default: ""
-  is_breaking_change:
+  is-breaking-change:
     description: "is pr breaking change('true' or 'false')"
     required: true
     default: "false"
