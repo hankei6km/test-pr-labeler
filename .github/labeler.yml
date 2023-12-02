@@ -3,7 +3,7 @@
       - changed-files:
           - AnyGlobToAnyFile:
               - "test/**/*.spec.{js,ts}"
-              - "src/**/*.spec.{js,ts}"
+              - "src/**/*.{js,ts}"
               - ".vscodeignore"
 chore:
   - all:
