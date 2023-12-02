@@ -1,7 +1,10 @@
-test-ts:
+"scope: extension":
   - all:
       - changed-files:
-          - AnyGlobToAnyFile: ["test/**/*.spec.{js,ts}"]
+          - AnyGlobToAnyFile:
+              - "test/**/*.spec.{js,ts}"
+              - "src/**/*.spec.{js,ts}"
+              - ".vscodeignore"
 chore:
   - all:
       - head-branch: ["^.+/chore-"]
